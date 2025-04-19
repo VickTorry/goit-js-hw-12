@@ -12,6 +12,7 @@ import 'izitoast/dist/css/iziToast.min.css';
 
 const form = document.querySelector('.form');
 const loadMoreBtn = document.querySelector('.load-more');
+const inlineLoader = loadMoreBtn.querySelector('.loader');
 
 let query = '';
 let page = 1;
@@ -40,8 +41,13 @@ form.addEventListener('submit', async e => {
     }
 
     createGallery(data.hits);
-    if (data.hits.length < 15 || totalHits <= 15) {
+
+    const totalPages = Math.ceil(totalHits / 15);
+    if (page >= totalPages) {
       hideLoadMoreButton();
+      iziToast.info({
+        message: "We're sorry, but you've reached the end of search results.",
+      });
     } else {
       showLoadMoreButton();
     }
@@ -54,7 +60,8 @@ form.addEventListener('submit', async e => {
 
 loadMoreBtn.addEventListener('click', async () => {
   page += 1;
-  showLoader();
+  loadMoreBtn.disabled = true;
+  inlineLoader.classList.add('visible');
 
   try {
     const data = await getImagesByQuery(query, page);
@@ -71,15 +78,16 @@ loadMoreBtn.addEventListener('click', async () => {
   } catch (err) {
     iziToast.error({ message: 'Something went wrong' });
   } finally {
-    hideLoader();
+    inlineLoader.classList.remove('visible');
+    loadMoreBtn.disabled = false;
   }
 });
 
-
 function scrollSmoothly() {
-  const { height: cardHeight } = document
-    .querySelector('.gallery-item')
-    .getBoundingClientRect();
+  const card = document.querySelector('.gallery-item');
+  if (!card) return;
+
+  const cardHeight = card.getBoundingClientRect().height;
   window.scrollBy({
     top: cardHeight * 2,
     behavior: 'smooth',
