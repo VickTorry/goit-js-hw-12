@@ -7,16 +7,16 @@
 /* Common styles */
 @import url('./reset.css');
 @import url('./base.css');
-@import url('./container.css');
 
-.load-more,
-.loader {
+/* Reset visibility */
+.load-more {
   display: none;
 }
 
-.load-more.visible,
-.loader.visible {
-  display: block;
+.load-more.visible {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px 20px;
   font-size: 16px;
   background-color: #4f46e5;
@@ -24,7 +24,50 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin: 0 auto;
+  margin: 24px auto;
+}
+
+.load-more:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Loader inside button */
+.load-more .loader {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ccc;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-left: 10px;
+}
+
+.load-more .loader.visible {
+  display: inline-block;
+}
+
+/* Separate global loader (if exists) */
+.loader:not(.load-more .loader) {
+  display: none;
+  margin: 20px auto;
+}
+
+.loader.visible:not(.load-more .loader) {
+  display: block;
+}
+
+/* Keyframes */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.load-more-wrapper {
+  display: flex;
+  justify-content: center;
 }
 
 body {

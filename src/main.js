@@ -66,7 +66,8 @@ loadMoreBtn.addEventListener('click', async () => {
   try {
     const data = await getImagesByQuery(query, page);
     createGallery(data.hits);
-    scrollSmoothly();
+
+    setTimeout(scrollSmoothly, 0);
 
     const totalPages = Math.ceil(totalHits / 15);
     if (page >= totalPages) {
@@ -76,6 +77,7 @@ loadMoreBtn.addEventListener('click', async () => {
       });
     }
   } catch (err) {
+    console.error('Load more error:', err);
     iziToast.error({ message: 'Something went wrong' });
   } finally {
     inlineLoader.classList.remove('visible');
